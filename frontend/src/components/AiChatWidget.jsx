@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Sparkles, X, Send, MessageCircle } from 'lucide-react';
+import { askAI } from '../services/api';
 
 export const AiChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,18 +21,13 @@ export const AiChatWidget = () => {
     setInputValue(""); setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8000/ai/chat', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: userText })
-      });
-      if (!response.ok) throw new Error("API Hatası");
-      const data = await response.json();
-      setMessages(prev => [...prev, { id: Date.now() + 1, text: data.reply, sender: "ai" }]);
+      const data = await askAI(userText);
+      setMessages(prev => [...prev, { id: Date.now() + 1, text: data?.answer || "Üzgünüm, şu anda bir yanıt alınamadı.", sender: "ai" }]);
     } catch (error) {
-      setTimeout(() => {
-        const mockReply = "Bağlantı kurulana kadar offline moddayım. Son verilere göre 'Defne Sabunu' stoğumuz kritik seviyede (8 adet kaldı).";
-        setMessages(prev => [...prev, { id: Date.now() + 1, text: mockReply, sender: "ai" }]);
-        setIsLoading(false);
-      }, 1500);
+      const mockReply = "Bağlantı kurulana kadar offline moddayım. Son verilere göre 'Defne Sabunu' stoğumuz kritik seviyede (8 adet kaldı).";
+      setMessages(prev => [...prev, { id: Date.now() + 1, text: mockReply, sender: "ai" }]);
+    } finally {
+      setIsLoading(false);
     }
   };
 

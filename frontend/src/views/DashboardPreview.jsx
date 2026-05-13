@@ -1,15 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Package, ShoppingBag, AlertTriangle, Clock, Sparkles, Loader2, ChevronRight } from 'lucide-react';
-import { callGeminiAPI } from '../services/api';
+import { askAI } from '../services/api';
 
 export const DashboardPreview = ({ setActiveView, products, orders }) => {
   const [insight, setInsight] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true);
-    callGeminiAPI("Deprem bölgesindeki kadın kooperatifi yöneticisi Betül'e 2 cümlelik, motive edici e-ticaret operasyon veya pazarlama önerisi ver. Selamlama yapma, doğrudan öneriye gir.")
-      .then(setInsight).catch(() => setInsight("Siparişleriniz düzenli artıyor! Bugün sosyal medyada üretim sürecinden bir hikaye paylaşarak bu ilgiyi satışa çevirebilirsiniz.")).finally(() => setIsLoading(false));
+    const loadInsight = async () => {
+      setIsLoading(true);
+      try {
+        const prompt = "Deprem bölgesindeki kadın kooperatifi yöneticisi Betül'e 2 cümlelik, motive edici e-ticaret operasyon veya pazarlama önerisi ver. Selamlama yapma, doğrudan öneriye gir.";
+        const response = await askAI(prompt);
+        setInsight(response?.answer || "Siparişleriniz düzenli artıyor! Bugün sosyal medyada üretim sürecinden bir hikaye paylaşarak bu ilgiyi satışa çevirebilirsiniz.");
+      } catch (error) {
+        setInsight("Siparişleriniz düzenli artıyor! Bugün sosyal medyada üretim sürecinden bir hikaye paylaşarak bu ilgiyi satışa çevirebilirsiniz.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadInsight();
   }, []);
 
   return (
