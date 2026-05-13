@@ -3,24 +3,35 @@ import { Package, ShoppingBag, AlertTriangle, Clock, Sparkles, Loader2, ChevronR
 import { askAI } from '../services/api';
 
 export const DashboardPreview = ({ setActiveView, products, orders }) => {
-  const [insight, setInsight] = useState("");
+  const [insight, setInsight] = useState("Terra önerisi hazırlanıyor...");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    let active = true;
     const loadInsight = async () => {
       setIsLoading(true);
       try {
         const prompt = "Deprem bölgesindeki kadın kooperatifi yöneticisi Betül'e 2 cümlelik, motive edici e-ticaret operasyon veya pazarlama önerisi ver. Selamlama yapma, doğrudan öneriye gir.";
         const response = await askAI(prompt);
-        setInsight(response?.answer || "Siparişleriniz düzenli artıyor! Bugün sosyal medyada üretim sürecinden bir hikaye paylaşarak bu ilgiyi satışa çevirebilirsiniz.");
+        const answer = response?.answer?.trim();
+        if (!active) return;
+        if (answer) {
+          setInsight(answer);
+        } else {
+          setInsight("Terra önerisi alınamadı. Lütfen daha sonra tekrar deneyin.");
+        }
       } catch (error) {
-        setInsight("Siparişleriniz düzenli artıyor! Bugün sosyal medyada üretim sürecinden bir hikaye paylaşarak bu ilgiyi satışa çevirebilirsiniz.");
+        if (!active) return;
+        setInsight("Terra önerisi alınamadı. Lütfen daha sonra tekrar deneyin.");
       } finally {
-        setIsLoading(false);
+        if (active) setIsLoading(false);
       }
     };
 
     loadInsight();
+    return () => {
+      active = false;
+    };
   }, []);
 
   return (
