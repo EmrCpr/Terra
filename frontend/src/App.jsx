@@ -36,7 +36,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F6EFE3] text-[#2F2F2F] font-sans selection:bg-[#6B8E23]/20 relative overflow-x-hidden">
+    <div className="min-h-screen zeytin-deseni text-[#2F2F2F] font-sans selection:bg-[#6B8E23]/20 relative overflow-x-hidden">
       {toast.show && <Toast message={toast.message} type={toast.type} onClose={() => setToast({show: false, message:"", type:""})} />}
       
       <Navbar toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} isSidebarOpen={isSidebarOpen} />
