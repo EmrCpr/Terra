@@ -63,8 +63,24 @@ def _chat_context() -> str:
         "- '128 numaralı sipariş', 'Sipariş 1', 'SIP-3' gibi formatları tanı.\n"
         "- Ürün sorusu varsa products içinde ada göre ara.\n"
         "- Her zaman Türkçe, kısa ve profesyonel cevap ver.\n"
-        "- Kadın kooperatifi müşterilerine saygılı ve nazik bir ton kullan."
+        "- Kadın kooperatifi müşterilerine saygılı ve nazik bir ton kullan.\n"
+        "- Teknik durum terimlerini Türkçeye çevir: pending → hazırlanıyor, shipped → kargoya verildi, delayed → gecikmede.\n"
+        "- Eğer bu terimleri kullanırsan, İngilizce olanı parantez içinde ekle."
     )
+
+
+def _normalize_status_terms(text: str) -> str:
+    import re
+
+    replacements = {
+        r"\bpending\b": "hazırlanıyor (pending)",
+        r"\bshipped\b": "kargoya verildi (shipped)",
+        r"\bdelayed\b": "gecikmede (delayed)",
+    }
+    result = text
+    for pattern, replacement in replacements.items():
+        result = re.sub(pattern, replacement, result, flags=re.IGNORECASE)
+    return result
 
 
 def chat(message: str) -> dict:
@@ -77,6 +93,7 @@ def chat(message: str) -> dict:
         + "Sadece verilen veriyi kullanarak ve yukarıdaki kuralları takip ederek net bir cevap ver."
     )
     answer = create_gemini_response(prompt)
+    answer = _normalize_status_terms(answer)
     return {"answer": answer}
 
 
