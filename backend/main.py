@@ -44,7 +44,7 @@ def get_dashboard():
     pending_orders = len([o for o in orders if o["status"] == "pending"])
     shipped_orders = len([o for o in orders if o["status"] == "shipped"])
     delayed_orders = len([o for o in orders if o["status"] == "delayed"])
-    critical_products = [p for p in products if p["stock"] < 5]
+    critical_products = [p for p in products if p["stock"] <= p["criticalStockThreshold"]]
     delayed_order_list = [o for o in orders if o["status"] == "delayed"]
 
     return {

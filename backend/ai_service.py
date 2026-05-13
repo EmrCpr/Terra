@@ -59,7 +59,7 @@ def _chat_context() -> str:
         "SİPARİŞLER VERİSİ:\n"
         f"{orders_json}\n\n"
         "KURALLAR:\n"
-        "- Kullanıcı sipariş numarası soruyorsa, orders içinde id alanını ara.\n"
+        "- Kullanıcı sipariş numarası soruyorsa, orders içinde id, order_no alanlarını ara.\n"
         "- '128 numaralı sipariş', 'Sipariş 1', 'SIP-3' gibi formatları tanı.\n"
         "- Ürün sorusu varsa products içinde ada göre ara.\n"
         "- Her zaman Türkçe, kısa ve profesyonel cevap ver.\n"
@@ -105,6 +105,11 @@ def _find_order_by_id(order_id: str) -> dict | None:
     """Farklı order_id formatlarından (SIP-1004, 1004, 1004 int) sipariş bulur."""
     import re
     
+    # Önce order_no ile tam eşleşme dene
+    order = next((item for item in orders if item.get("order_no") == order_id), None)
+    if order:
+        return order
+    
     # String içinden sayıları çıkar (SIP-1004 → 1004, 1004 → 1004)
     match = re.search(r'\d+', str(order_id))
     if match:
@@ -125,9 +130,11 @@ def customer_message(order_id: str, message_type: str) -> dict:
     
     order_data = {
         "id": order["id"],
+        "order_no": order["order_no"],
         "customer_name": order["customer_name"],
         "status": order["status"],
         "order_date": order["order_date"],
+        "total_price": order["total_price"],
         "products": order_products,
     }
     

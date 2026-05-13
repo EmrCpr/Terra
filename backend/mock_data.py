@@ -1,17 +1,15 @@
 products = [
-    {"id": 1, "name": "Hatay Usulü Biber Salçası", "category": "Gıda", "short_info": "Katkısız, geleneksel yöntemlerle üretilmiş acı biber salçası", "price": 180, "stock": 5},
-    {"id": 2, "name": "Nar Ekşisi", "category": "Gıda", "short_info": "Doğal narlardan elde edilen geleneksel ekşi", "price": 120, "stock": 10},
-    {"id": 3, "name": "Defne Sabunu", "category": "Kişisel Bakım", "short_info": "Defne yaprağı özlü doğal sabun", "price": 50, "stock": 2},
-    {"id": 4, "name": "El Yapımı Reçel", "category": "Gıda", "short_info": "Meyve bahçelerinden toplanan meyvelerle yapılan reçel", "price": 90, "stock": 15},
-    {"id": 5, "name": "Zeytinyağı", "category": "Gıda", "short_info": "Soğuk sıkım zeytinyağı", "price": 200, "stock": 8},
-    {"id": 6, "name": "Baharat Paketi", "category": "Gıda", "short_info": "Geleneksel baharat karışımı", "price": 70, "stock": 12},
+    {"id": 1, "name": "Hakiki Nar Ekşisi (500ml)", "category": "Gıda", "short_info": "Doğal narlardan elde edilen geleneksel ekşi", "price": 180, "stock": 45, "criticalStockThreshold": 10},
+    {"id": 2, "name": "Geleneksel Defne Sabunu", "category": "Kozmetik", "short_info": "Defne yaprağı özlü doğal sabun", "price": 65, "stock": 8, "criticalStockThreshold": 15},
+    {"id": 3, "name": "Kahvaltılık Zahter", "category": "Gıda", "short_info": "Geleneksel kahvaltı baharatı", "price": 120, "stock": 32, "criticalStockThreshold": 10},
+    {"id": 4, "name": "Kurutulmuş Biber (1kg)", "category": "Gıda", "short_info": "Katkısız, geleneksel yöntemlerle kurutulmuş acı biber", "price": 210, "stock": 5, "criticalStockThreshold": 20},
+    {"id": 5, "name": "El İşlemesi Bez Çanta", "category": "Tekstil", "short_info": "El işi bez çanta", "price": 150, "stock": 18, "criticalStockThreshold": 5},
 ]
 
 orders = [
-    {"id": 1, "customer_name": "Ayşe Yılmaz", "products": [1, 2], "status": "shipped", "order_date": "2023-10-01"},
-    {"id": 2, "customer_name": "Fatma Kaya", "products": [3], "status": "pending", "order_date": "2023-10-02"},
-    {"id": 3, "customer_name": "Emine Demir", "products": [4, 5], "status": "delayed", "order_date": "2023-09-28"},
-    {"id": 4, "customer_name": "Zeynep Çelik", "products": [6], "status": "shipped", "order_date": "2023-10-03"},
-    {"id": 5, "customer_name": "Hatice Aydın", "products": [1, 3], "status": "pending", "order_date": "2023-10-04"},
-    {"id": 6, "customer_name": "Nurcan Öz", "products": [2, 4], "status": "delayed", "order_date": "2023-09-30"},
+    {"id": 1, "order_no": "SIP-1001", "customer_name": "Ahmet Yılmaz", "products": [1, 3], "status": "pending", "order_date": "2023-10-01", "total_price": 850},
+    {"id": 2, "order_no": "SIP-1002", "customer_name": "Ayşe Kaya", "products": [2], "status": "shipped", "order_date": "2023-10-02", "total_price": 320},
+    {"id": 3, "order_no": "SIP-1003", "customer_name": "Mehmet Demir", "products": [4, 5], "status": "delayed", "order_date": "2023-09-28", "total_price": 1200},
+    {"id": 4, "order_no": "SIP-1004", "customer_name": "Elif Can", "products": [1, 2], "status": "delayed", "order_date": "2023-10-03", "total_price": 450},
+    {"id": 5, "order_no": "SIP-1005", "customer_name": "Zeynep Şahin", "products": [3], "status": "shipped", "order_date": "2023-10-04", "total_price": 180},
 ]

@@ -8,13 +8,16 @@ class Product(BaseModel):
     short_info: str
     price: int
     stock: int
+    criticalStockThreshold: int
 
 class Order(BaseModel):
     id: int
+    order_no: str
     customer_name: str
     products: List[int]
     status: str
     order_date: str
+    total_price: int
 
 class Dashboard(BaseModel):
     total_products: int
