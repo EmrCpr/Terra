@@ -106,6 +106,9 @@ def product_description(product_name: str, category: str, short_info: str, price
         f"\nKategori: {category}"
         f"\nKısa bilgi: {short_info}"
         f"\nFiyat: {price} TL"
+        "\n\nInstagram metnini sosyal medyada paylaşılabilecek kısa ve satışa yönlendirici bir içerik olarak hazırla."
+        " WhatsApp metnini ise samimi ve hızlı aksiyon çağrısı yapan bir müşteri bilgilendirme mesajı olarak yaz."
+        " Açıklamada ürünün öne çıkan avantajlarını ve el emeği değerini vurgula."
         "\n\nLütfen sadece aşağıdaki JSON formatında yanıt ver:\n"
         '{"description": "<ürün açıklaması>", "instagram_text": "<instagram metni>", "whatsapp_text": "<whatsapp mesajı>"}'
     )

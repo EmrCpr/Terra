@@ -51,37 +51,45 @@ export const AiProductWriter = ({ setToast }) => {
             {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Sparkles className="h-5 w-5" />} {isLoading ? "Sihir Yapılıyor..." : "Büyülü Metni Oluştur"}
           </button>
         </form>
-        <div className="bg-gradient-to-br from-white to-[#F6EFE3]/50 p-6 rounded-2xl shadow-sm border border-[#8B5E3C]/10 flex flex-col min-h-[400px] space-y-4">
+        <div className="bg-gradient-to-br from-white to-[#F6EFE3]/50 p-6 rounded-2xl shadow-sm border border-[#8B5E3C]/10 min-h-[400px]">
           {generatedText ? (
-            <>
-              <div>
-                <div className="flex justify-between items-center mb-2">
+            <div className="grid grid-cols-1 gap-4">
+              <div className="bg-white border border-[#8B5E3C]/10 rounded-2xl p-4 shadow-sm">
+                <div className="flex justify-between items-center mb-3">
                   <h3 className="font-bold text-[#8B5E3C] text-xs uppercase tracking-wide">Açıklama</h3>
                   <button type="button" onClick={() => handleCopy(generatedText)} className="flex items-center gap-1.5 text-xs font-bold text-[#6B8E23] hover:bg-[#6B8E23]/10 px-3 py-1.5 rounded-lg transition-colors"><Copy className="h-3 w-3"/> Kopyala</button>
                 </div>
-                <textarea readOnly value={generatedText} className="w-full h-24 outline-none text-[#2F2F2F] bg-white/50 border border-[#8B5E3C]/20 rounded-lg p-3 resize-none text-sm leading-relaxed" />
+                <div className="min-h-[180px] max-h-[320px] overflow-y-auto whitespace-pre-wrap break-words text-sm text-[#2F2F2F] leading-relaxed p-2 bg-[#F7F3EE] rounded-xl border border-[#8B5E3C]/10">
+                  {generatedText}
+                </div>
               </div>
-              {generatedInstagram && (
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-bold text-[#8B5E3C] text-xs uppercase tracking-wide">Instagram</h3>
-                    <button type="button" onClick={() => handleCopy(generatedInstagram)} className="flex items-center gap-1.5 text-xs font-bold text-[#6B8E23] hover:bg-[#6B8E23]/10 px-3 py-1.5 rounded-lg transition-colors"><Copy className="h-3 w-3"/> Kopyala</button>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {generatedInstagram && (
+                  <div className="bg-white border border-[#8B5E3C]/10 rounded-2xl p-4 shadow-sm">
+                    <div className="flex justify-between items-center mb-3">
+                      <h3 className="font-bold text-[#8B5E3C] text-xs uppercase tracking-wide">Instagram</h3>
+                      <button type="button" onClick={() => handleCopy(generatedInstagram)} className="flex items-center gap-1.5 text-xs font-bold text-[#6B8E23] hover:bg-[#6B8E23]/10 px-3 py-1.5 rounded-lg transition-colors"><Copy className="h-3 w-3"/> Kopyala</button>
+                    </div>
+                    <div className="min-h-[140px] max-h-[260px] overflow-y-auto whitespace-pre-wrap break-words text-sm text-[#2F2F2F] leading-relaxed p-2 bg-[#F7F3EE] rounded-xl border border-[#8B5E3C]/10">
+                      {generatedInstagram}
+                    </div>
                   </div>
-                  <textarea readOnly value={generatedInstagram} className="w-full h-20 outline-none text-[#2F2F2F] bg-white/50 border border-[#8B5E3C]/20 rounded-lg p-3 resize-none text-sm leading-relaxed" />
-                </div>
-              )}
-              {generatedWhatsapp && (
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-bold text-[#8B5E3C] text-xs uppercase tracking-wide">WhatsApp</h3>
-                    <button type="button" onClick={() => handleCopy(generatedWhatsapp)} className="flex items-center gap-1.5 text-xs font-bold text-[#6B8E23] hover:bg-[#6B8E23]/10 px-3 py-1.5 rounded-lg transition-colors"><Copy className="h-3 w-3"/> Kopyala</button>
+                )}
+                {generatedWhatsapp && (
+                  <div className="bg-white border border-[#8B5E3C]/10 rounded-2xl p-4 shadow-sm">
+                    <div className="flex justify-between items-center mb-3">
+                      <h3 className="font-bold text-[#8B5E3C] text-xs uppercase tracking-wide">WhatsApp</h3>
+                      <button type="button" onClick={() => handleCopy(generatedWhatsapp)} className="flex items-center gap-1.5 text-xs font-bold text-[#6B8E23] hover:bg-[#6B8E23]/10 px-3 py-1.5 rounded-lg transition-colors"><Copy className="h-3 w-3"/> Kopyala</button>
+                    </div>
+                    <div className="min-h-[140px] max-h-[260px] overflow-y-auto whitespace-pre-wrap break-words text-sm text-[#2F2F2F] leading-relaxed p-2 bg-[#F7F3EE] rounded-xl border border-[#8B5E3C]/10">
+                      {generatedWhatsapp}
+                    </div>
                   </div>
-                  <textarea readOnly value={generatedWhatsapp} className="w-full h-20 outline-none text-[#2F2F2F] bg-white/50 border border-[#8B5E3C]/20 rounded-lg p-3 resize-none text-sm leading-relaxed" />
-                </div>
-              )}
-            </>
+                )}
+              </div>
+            </div>
           ) : isLoading ? (
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-[#8B5E3C]/50 gap-2 rounded-2xl"><Wand2 className="h-8 w-8 animate-bounce text-[#6B8E23]" /><p className="text-sm font-medium">Yazılıyor...</p></div>
+            <div className="relative h-full flex flex-col items-center justify-center text-[#8B5E3C]/50 gap-2 rounded-2xl"><Wand2 className="h-8 w-8 animate-bounce text-[#6B8E23]" /><p className="text-sm font-medium">Yazılıyor...</p></div>
           ) : (
             <div className="h-full flex items-center justify-center text-[#8B5E3C]/40 text-sm text-center">Sol taraftan bilgileri doldurup üret butonuna basın.</div>
           )}

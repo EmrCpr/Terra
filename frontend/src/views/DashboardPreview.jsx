@@ -32,13 +32,18 @@ export const DashboardPreview = ({ setActiveView, products, orders }) => {
   const pendingOrders = orders.filter(o => o.status === "Hazırlanıyor" || o.status === "pending").length;
   const criticalProducts = products.filter(p => p.stock <= p.criticalStockThreshold).length;
   const delayedOrders = orders.filter(o => o.status === "Gecikti" || o.status === "delayed").length;
+  const criticalProductNames = products
+    .filter(p => p.stock <= p.criticalStockThreshold)
+    .map(p => p.name)
+    .slice(0, 2)
+    .join(", ");
 
   const getFriendlyFallback = () => {
     if (delayedOrders > 0) {
       return "Bugün geciken siparişlerinizi önceliklendirmeniz müşteri memnuniyetini artırabilir.";
     }
     if (criticalProducts > 0) {
-      return "Kritik stokta olan ürünlerinizi kontrol etmeniz ve yeniden sipariş planı yapmanız önerilir.";
+      return `Kritik stokta olan ürünlerinizi (${criticalProductNames}) kontrol etmeniz ve yeniden üretim planı yapmanız önerilir.`;
     }
     if (pendingOrders > 0) {
       return "Hazırlanan siparişlerinizi zamanında göndermek müşteri memnuniyetini güçlendirir.";
@@ -51,7 +56,7 @@ export const DashboardPreview = ({ setActiveView, products, orders }) => {
     const loadInsight = async () => {
       setIsLoading(true);
       try {
-        const prompt = `Deprem bölgesindeki kadın kooperatifi yöneticisine, mevcut siparişler ve stok verilerine göre (bekleyen: ${pendingOrders}, geciken: ${delayedOrders}, kritik stok: ${criticalProducts}) 2 cümlelik kısa bir operasyon önerisi ver. Yanıt kısa, Türkçe ve motive edici olsun.`;
+        const prompt = `Deprem bölgesindeki kadın kooperatifi yöneticisine, mevcut siparişler ve stok verilerine göre (bekleyen: ${pendingOrders}, geciken: ${delayedOrders}, kritik stok: ${criticalProducts}${criticalProductNames ? `, ürün: ${criticalProductNames}` : ""}) 2 cümlelik kısa bir operasyon önerisi ver. Yanıt kısa, Türkçe ve motive edici olsun.`;
         const response = await askAI(prompt);
         const answer = response?.answer?.trim();
         if (!active) return;
@@ -71,7 +76,7 @@ export const DashboardPreview = ({ setActiveView, products, orders }) => {
     return () => {
       active = false;
     };
-  }, [delayedOrders, criticalProducts, pendingOrders]);
+  }, [delayedOrders, criticalProducts, pendingOrders, criticalProductNames]);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300 relative">
