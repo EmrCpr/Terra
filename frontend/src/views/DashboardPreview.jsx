@@ -29,23 +29,40 @@ export const DashboardPreview = ({ setActiveView, products, orders }) => {
   const [insight, setInsight] = useState("Terra önerisi hazırlanıyor...");
   const [isLoading, setIsLoading] = useState(false);
 
+  const pendingOrders = orders.filter(o => o.status === "Hazırlanıyor" || o.status === "pending").length;
+  const criticalProducts = products.filter(p => p.stock <= p.criticalStockThreshold).length;
+  const delayedOrders = orders.filter(o => o.status === "Gecikti" || o.status === "delayed").length;
+
+  const getFriendlyFallback = () => {
+    if (delayedOrders > 0) {
+      return "Bugün geciken siparişlerinizi önceliklendirmeniz müşteri memnuniyetini artırabilir.";
+    }
+    if (criticalProducts > 0) {
+      return "Kritik stokta olan ürünlerinizi kontrol etmeniz ve yeniden sipariş planı yapmanız önerilir.";
+    }
+    if (pendingOrders > 0) {
+      return "Hazırlanan siparişlerinizi zamanında göndermek müşteri memnuniyetini güçlendirir.";
+    }
+    return "Üretim ve teslimat süreçlerinizi izleyerek müşterilerinize daha hızlı hizmet sunabilirsiniz.";
+  };
+
   useEffect(() => {
     let active = true;
     const loadInsight = async () => {
       setIsLoading(true);
       try {
-        const prompt = "Deprem bölgesindeki kadın kooperatifi yöneticisine 2 cümlelik, motive edici e-ticaret operasyon önerisi ver.";
+        const prompt = `Deprem bölgesindeki kadın kooperatifi yöneticisine, mevcut siparişler ve stok verilerine göre (bekleyen: ${pendingOrders}, geciken: ${delayedOrders}, kritik stok: ${criticalProducts}) 2 cümlelik kısa bir operasyon önerisi ver. Yanıt kısa, Türkçe ve motive edici olsun.`;
         const response = await askAI(prompt);
         const answer = response?.answer?.trim();
         if (!active) return;
         if (answer) {
           setInsight(answer);
         } else {
-          setInsight("Terra önerisi alınamadı. Lütfen daha sonra tekrar deneyin.");
+          setInsight(getFriendlyFallback());
         }
       } catch (error) {
         if (!active) return;
-        setInsight("Terra önerisi alınamadı. Lütfen daha sonra tekrar deneyin.");
+        setInsight(getFriendlyFallback());
       } finally {
         if (active) setIsLoading(false);
       }
@@ -54,11 +71,7 @@ export const DashboardPreview = ({ setActiveView, products, orders }) => {
     return () => {
       active = false;
     };
-  }, []);
-
-  const pendingOrders = orders.filter(o => o.status === "Hazırlanıyor" || o.status === "pending").length;
-  const criticalProducts = products.filter(p => p.stock <= p.criticalStockThreshold).length;
-  const delayedOrders = orders.filter(o => o.status === "Gecikti" || o.status === "delayed").length;
+  }, [delayedOrders, criticalProducts, pendingOrders]);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300 relative">

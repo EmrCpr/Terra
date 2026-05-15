@@ -53,7 +53,7 @@ def _chat_context() -> str:
     return (
         "Senin rolün Terra, kadın kooperatifleri için dijital satış ve operasyon asistanıdır.\n"
         "Müşteriye sadece aşağıdaki veriye dayanan ve doğru bilgi üretecek şekilde cevap ver.\n"
-        "Veriyi uydurma, eğer bilgi yoksa 'Sistemimizde bu bilgiyle kayıt bulamadım' de.\n\n"
+        "Veriyi uydurma. Eğer verilen veri yetersizse, robotik veya teknik sistem diline kaçmadan genel bir e-ticaret operasyon önerisi sun.\n\n"
         "ÜRÜNLER VERİSİ:\n"
         f"{products_json}\n\n"
         "SİPARİŞLER VERİSİ:\n"
@@ -64,8 +64,9 @@ def _chat_context() -> str:
         "- Ürün sorusu varsa products içinde ada göre ara.\n"
         "- Her zaman Türkçe, kısa ve profesyonel cevap ver.\n"
         "- Kadın kooperatifi müşterilerine saygılı ve nazik bir ton kullan.\n"
-        "- Teknik durum terimlerini Türkçeye çevir: pending → hazırlanıyor, shipped → kargoya verildi, delayed → gecikmede.\n"
-        "- Eğer bu terimleri kullanırsan, İngilizce olanı parantez içinde ekle."
+        "- Teknik sistem dili, raw backend değerleri, JSON veya debug metni kullanma.\n"
+        "- 'yetkim bulunmamaktadır', 'kayıt bulamadım', 'sistemimizde bu bilgiyle kayıt bulamadım' gibi ifadeler kullanma.\n"
+        "- Teknik durum terimlerini doğal Türkçe karşılıklarıyla yaz: pending → beklemede, shipped → kargoya verildi, delayed → gecikmede."
     )
 
 
@@ -73,9 +74,9 @@ def _normalize_status_terms(text: str) -> str:
     import re
 
     replacements = {
-        r"\bpending\b": "hazırlanıyor (pending)",
-        r"\bshipped\b": "kargoya verildi (shipped)",
-        r"\bdelayed\b": "gecikmede (delayed)",
+        r"\bpending\b": "beklemede",
+        r"\bshipped\b": "kargoya verildi",
+        r"\bdelayed\b": "gecikmede",
     }
     result = text
     for pattern, replacement in replacements.items():
