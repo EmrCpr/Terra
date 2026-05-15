@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Settings } from 'lucide-react';
-import { initialProducts, initialOrders } from './data/mockData';
+import { getProducts, getOrders } from './services/api';
 import { Toast } from './components/Toast';
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
@@ -10,13 +10,56 @@ import { ProductsView } from './views/ProductsView';
 import { OrdersView } from './views/OrdersView';
 import { AiProductWriter } from './views/AiProductWriter';
 
+const statusMap = {
+  pending: 'Hazırlanıyor',
+  shipped: 'Kargoya Verildi',
+  delayed: 'Gecikti',
+  delivered: 'Teslim Edildi',
+};
+
+const formatOrderDate = (dateString) => {
+  const date = new Date(dateString);
+  return Number.isNaN(date.getTime()) ? dateString : date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
+};
+
+const mapProducts = (products) => products.map((product) => ({
+  id: product.id,
+  name: product.name,
+  category: product.category,
+  stock: product.stock,
+  criticalStockThreshold: product.criticalStockThreshold,
+  price: `₺${product.price}`,
+}));
+
+const mapOrders = (orders) => orders.map((order) => ({
+  id: order.order_no,
+  customer: order.customer_name,
+  date: formatOrderDate(order.order_date),
+  total: `₺${order.total_price}`,
+  status: statusMap[order.status] || order.status,
+}));
+
 export default function App() {
   const [activeView, setActiveView] = useState('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [toast, setToast] = useState({ show: false, message: "", type: "success" });
   
-  const [products, setProducts] = useState(initialProducts);
-  const [orders, setOrders] = useState(initialOrders);
+  const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
+  
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [productData, orderData] = await Promise.all([getProducts(), getOrders()]);
+        setProducts(mapProducts(productData));
+        setOrders(mapOrders(orderData));
+      } catch (error) {
+        console.error('Veri yüklenirken hata oluştu:', error);
+      }
+    };
+
+    loadData();
+  }, []);
 
   const renderView = () => {
     switch(activeView) {

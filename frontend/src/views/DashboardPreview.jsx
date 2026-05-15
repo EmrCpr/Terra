@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Package, ShoppingBag, AlertTriangle, Clock, Sparkles, Loader2, ChevronRight, MessageSquareWarning } from 'lucide-react';
-import { askAI } from '../services/api';
+import { askAI, getDashboard } from '../services/api';
 
 const Sparkline = ({ color }) => (
   <svg width="60" height="20" viewBox="0 0 60 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="opacity-80">
@@ -28,17 +28,21 @@ const CircularProgress = ({ value, total, color }) => {
 export const DashboardPreview = ({ setActiveView, products, orders }) => {
   const [insight, setInsight] = useState("Terra önerisi hazırlanıyor...");
   const [isLoading, setIsLoading] = useState(false);
+  const [dashboard, setDashboard] = useState(null);
 
-  const pendingOrders = orders.filter(o => o.status === "Hazırlanıyor" || o.status === "pending").length;
-  const criticalProducts = products.filter(p => p.stock <= p.criticalStockThreshold).length;
-  const delayedOrders = orders.filter(o => o.status === "Gecikti" || o.status === "delayed").length;
-  const criticalProductNames = products
+  const pendingOrders = dashboard?.pending_orders ?? orders.filter(o => o.status === "Hazırlanıyor" || o.status === "pending").length;
+  const criticalProducts = dashboard?.critical_stock_count ?? products.filter(p => p.stock <= p.criticalStockThreshold).length;
+  const delayedOrders = dashboard?.delayed_orders ?? orders.filter(o => o.status === "Gecikti" || o.status === "delayed").length;
+  const criticalProductNames = dashboard?.critical_products?.map(p => p.name).slice(0, 2).join(", ") || products
     .filter(p => p.stock <= p.criticalStockThreshold)
     .map(p => p.name)
     .slice(0, 2)
     .join(", ");
 
   const getFriendlyFallback = () => {
+    if (delayedOrders > 0 && criticalProducts > 0) {
+      return `Son siparişlerde ${delayedOrders} gecikme, kritik stokta ${criticalProductNames} var. Öne çıkan aksiyon, bu ürünlerin stok seviyelerini hızlıca arttırmak.`;
+    }
     if (delayedOrders > 0) {
       return "Bugün geciken siparişlerinizi önceliklendirmeniz müşteri memnuniyetini artırabilir.";
     }
@@ -52,6 +56,15 @@ export const DashboardPreview = ({ setActiveView, products, orders }) => {
   };
 
   useEffect(() => {
+    const loadDashboard = async () => {
+      try {
+        const dashboardData = await getDashboard();
+        setDashboard(dashboardData);
+      } catch (error) {
+        console.error('Dashboard verisi yüklenirken hata oluştu:', error);
+      }
+    };
+
     let active = true;
     const loadInsight = async () => {
       setIsLoading(true);
@@ -72,7 +85,10 @@ export const DashboardPreview = ({ setActiveView, products, orders }) => {
         if (active) setIsLoading(false);
       }
     };
+
+    loadDashboard();
     loadInsight();
+
     return () => {
       active = false;
     };
@@ -92,7 +108,7 @@ export const DashboardPreview = ({ setActiveView, products, orders }) => {
           <div className="flex items-start justify-between mb-4">
             <div>
               <p className="text-sm font-semibold text-[#2F2F2F]/50 uppercase tracking-wider">Toplam Ürün</p>
-              <p className="text-3xl font-extrabold text-[#2F2F2F] mt-1">{products.length}</p>
+              <p className="text-3xl font-extrabold text-[#2F2F2F] mt-1">{dashboard?.total_products ?? products.length}</p>
             </div>
             <div className="p-2 bg-[#8B5E3C]/5 rounded-xl group-hover:bg-[#8B5E3C]/10 transition-colors"><Package className="h-6 w-6 text-[#8B5E3C]" /></div>
           </div>

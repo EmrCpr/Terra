@@ -66,6 +66,9 @@ def _chat_context() -> str:
         "- Kadın kooperatifi müşterilerine saygılı ve nazik bir ton kullan.\n"
         "- Teknik sistem dili, raw backend değerleri, JSON veya debug metni kullanma.\n"
         "- 'yetkim bulunmamaktadır', 'kayıt bulamadım', 'sistemimizde bu bilgiyle kayıt bulamadım' gibi ifadeler kullanma.\n"
+        "- Orders JSON içindeki status değerleri şöyle: pending = hazırlanıyor, shipped = kargoya verildi, delayed = gecikmede.\n"
+        "- Sadece delayed olanlar gecikmiş sayılır; pending olanlar hazırlanıyor sayılır.\n"
+        "- Eğer soru \"Siparişi geciken isimler\" gibi gecikmiş siparişler hakkında ise, sadece delayed durumu olan müşteri isimlerini ver.\n"
         "- Teknik durum terimlerini doğal Türkçe karşılıklarıyla yaz: pending → beklemede, shipped → kargoya verildi, delayed → gecikmede."
     )
 
